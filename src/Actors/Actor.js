@@ -1,16 +1,19 @@
 function Actor(xInitial, yInitial, concreteActor)
 {
-  var sprites;
+  this.sprites;
   var walkSpeed = 14;
   var gravity = 0.05;
 
+  this.spriteIndex;
+
   if('Sprites' in concreteActor)
-    sprites = concreteActor.Sprites;
+    this.sprites = concreteActor.Sprites;
   else
   {
     var ryuSprite = new Image(67,107);
     ryuSprite.src = "http://www.sdtimes.com/images/0604.sdt-blog-video-game-heroes-ryu.png";
-    sprites = [ryuSprite];
+    this.sprites = [ryuSprite];
+    this.spriteIndex = 0;
   }
 
   if('WalkSpeed' in concreteActor)
@@ -20,12 +23,15 @@ function Actor(xInitial, yInitial, concreteActor)
 
   this.ConcreteActor = concreteActor;
 
-  this.entity = new Entity(xInitial,yInitial,gravity,walkSpeed,sprites);
+  this.entity = new Entity(xInitial,yInitial,gravity,walkSpeed,this.sprites);
 }
 
 function ActorTick(actor, interval)
 {
   if("TickActions" in actor.ConcreteActor)
     actor.ConcreteActor.TickActions(actor.entity);
+  if("ResolveSprite" in actor.ConcreteActor)
+    actor.ConcreteActor.ResolveSpriteIndex();
+
   EntityTick(actor.entity, interval);
 }

@@ -1,12 +1,11 @@
-<script type="text/javascript" src = "./Globals.js"></script>
-<script type="text/javascript" src = "./Control/Keyboard.js"></script>
-<script type="text/javascript" src = "./Actors/Actor.js"></script>
-<script type="text/javascript" src = "./Entity/Entity.js"></script>
-<script type="text/javascript" src = "./Actors/Player/Player.js"></script>
-<script type="text/javascript" src = "./Render/Ticker.js"></script>
+
+
+
 <!DOCTYPE html>
 <html>
   <head>
+
+
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Game</title>
 
@@ -19,7 +18,20 @@
     <div id="container">
 
     </div>
-    <script type="text/javascript" src = "./Render/Canvas.js"></script>
 
+    <canvas id = "tmpCanvas" style = "position: absolute; top: 800px;display: none;"></canvas>
+
+    <script type="text/javascript" src = "./Globals.js"></script>
+    <script type="text/javascript" src = "./Control/Keyboard.js"></script>
+
+    <script type="text/javascript" src = "./Actors/Actor.js"></script>
+    <script type="text/javascript" src = "./Entity/Entity.js"></script>
+    <script type="text/javascript" src = "./Actors/Player/Player.js"></script>
+
+    <script type="text/javascript" src = "./World/CollisionMap.js"></script>
+
+    <script type="text/javascript" src = "./Render/RenderWorld.js"></script>
+    <script type="text/javascript" src = "./Render/Ticker.js"></script>
+    <script type="text/javascript" src = "./Render/Canvas.js"></script>
   </body>
 </html>
