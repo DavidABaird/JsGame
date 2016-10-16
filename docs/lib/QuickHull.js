@@ -1,5 +1,11 @@
 var ArbitraryBigNumber = 99999999999999999999999999999;
 
+function PersistantHullData(set,hull)
+{
+  this.set = set;
+  this.hull = hull;
+}
+
 function QuickHull(points)
 {
     var convexHull = [];
@@ -27,8 +33,12 @@ function QuickHull(points)
     var B = points[maxPoint];
     convexHull.push(A);
     convexHull.push(B);
+
+
     points.splice(minPoint,1);
     points.splice(maxPoint,1);
+
+
 
     var leftSet = [];
     var rightSet = [];
@@ -41,8 +51,12 @@ function QuickHull(points)
         else if (pointLocation(A, B, p) == 1)
             rightSet.push(p);
     }
-    hullSet(A, B, rightSet, convexHull);
-    hullSet(B, A, leftSet, convexHull);
+    var tempHullData = hullSet(A, B, rightSet, convexHull);
+    convexHull = tempHullData.hull;
+    rightSet = tempHullData.set;
+    tempHullData= hullSet(B, A, leftSet, convexHull);
+    convexHull = tempHullData.hull;
+    leftSet = tempHullData.set;
 
     return convexHull;
 }
@@ -59,6 +73,7 @@ function distance(A, B, C)
 
 function hullSet(A, B, set,hull)
 {
+    console.log(JSON.stringify(hull));
     var insertPosition;
 
     for(var i = 0; i < hull.length; i++)
@@ -71,17 +86,24 @@ function hullSet(A, B, set,hull)
     }
 
     if (set.length == 0)
-        return;
+    {
+        return new PersistantHullData(set,hull);
+    }
     if (set.length == 1)
     {
         p = set[0];
-        set.remove(p);
+        for (var i=0; i < set.length; i++) {
+            if (set[i].x == p.x && set[i].y == p.y) {
+                set.splice(i, 1);
+                break;
+            }
+        }
         hull.splice(insertPosition, 0, p);
-        return;
+        return new PersistantHullData(set,hull);
     }
     var dist = -1 * ArbitraryBigNumber;
     var furthestPoint = -1;
-    for (vari = 0; i < set.length; i++)
+    for (var i = 0; i < set.length; i++)
     {
         var p = set[i];
         var distance = distance(A, B, p);
@@ -94,6 +116,7 @@ function hullSet(A, B, set,hull)
     var P = set[furthestPoint];
     set.splice(furthestPoint,1);
     hull.splice(insertPosition, 0, P);
+
 
     // Determine who's to the left of AP
     var leftSetAP = [];
@@ -116,9 +139,16 @@ function hullSet(A, B, set,hull)
             leftSetPB.push(M);
         }
     }
-    hullSet(A, P, leftSetAP, hull);
-    hullSet(P, B, leftSetPB, hull);
+    console.log(hull);
+    console.log("XXX");
+    var tempHullData = hullSet(A, P, leftSetAP, hull);
+    hull = tempHullData.hull;
+    set = tempHullData.set;
+    tempHullData = hullSet(P, B, leftSetPB, hull);
+    hull = tempHullData.hull;
+    set = tempHullData.set;
 
+    return new PersistantHullData(set,hull);
 }
 
 function pointLocation(A, B, P)
