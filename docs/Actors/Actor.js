@@ -1,19 +1,17 @@
 function Actor(xInitial, yInitial, concreteActor)
 {
-  this.sprites;
+  this.Frames;
   var walkSpeed = 14;
   var gravity = 0.05;
 
-  this.spriteIndex;
+  this.frameIndex;
 
-  if('Sprites' in concreteActor)
-    this.sprites = concreteActor.Sprites;
+  if('Frames' in concreteActor)
+    this.Frames = concreteActor.Frames;
   else
   {
-    var ryuSprite = new Image(67,107);
-    ryuSprite.src = "http://www.sdtimes.com/images/0604.sdt-blog-video-game-heroes-ryu.png";
-    this.sprites = [ryuSprite];
-    this.spriteIndex = 0;
+    this.Frames = [new FrameData(TEST_SPRITE_B64,67,107)];
+    this.frameIndex = 0;
   }
 
   if('WalkSpeed' in concreteActor)

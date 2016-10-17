@@ -1,5 +1,4 @@
 var ArbitraryBigNumber = 99999999999999999999999999999;
-
 function PersistantHullData(set,hull)
 {
   this.set = set;
@@ -8,6 +7,7 @@ function PersistantHullData(set,hull)
 
 function QuickHull(points)
 {
+    console.log(points);
     var convexHull = [];
     if (points.length < 3)
         return points;
@@ -106,10 +106,10 @@ function hullSet(A, B, set,hull)
     for (var i = 0; i < set.length; i++)
     {
         var p = set[i];
-        var distance = distance(A, B, p);
-        if (distance > dist)
+        var thisDistance = distance(A, B, p);
+        if (thisDistance > dist)
         {
-            dist = distance;
+            dist = thisDistance;
             furthestPoint = i;
         }
     }
@@ -131,7 +131,7 @@ function hullSet(A, B, set,hull)
 
     // Determine who's to the left of PB
     var leftSetPB = [];
-    for (var i = 0; i < setlength; i++)
+    for (var i = 0; i < set.length; i++)
     {
         var M = set[i];
         if (pointLocation(P, B, M) == 1)
