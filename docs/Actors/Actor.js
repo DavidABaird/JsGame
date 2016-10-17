@@ -4,14 +4,17 @@ function Actor(xInitial, yInitial, concreteActor)
   var walkSpeed = 14;
   var gravity = 0.05;
 
-  this.frameIndex;
+  this.FrameIndex = 0;
 
   if('Frames' in concreteActor)
+  {
     this.Frames = concreteActor.Frames;
+    this.FrameIndex = concreteActor.FrameIndex;
+  }
   else
   {
-    this.Frames = [new FrameData(TEST_SPRITE_B64,67,107)];
-    this.frameIndex = 0;
+    this.Frames = [new FrameData(TEST_SPRITE_A_RIGHT,67,107)];
+    this.FrameIndex = 0;
   }
 
   if('WalkSpeed' in concreteActor)
@@ -21,7 +24,7 @@ function Actor(xInitial, yInitial, concreteActor)
 
   this.ConcreteActor = concreteActor;
 
-  this.entity = new Entity(xInitial,yInitial,gravity,walkSpeed,this.sprites);
+  this.entity = new Entity(xInitial,yInitial,gravity,walkSpeed);
 }
 
 function ActorTick(actor, interval)
@@ -30,6 +33,11 @@ function ActorTick(actor, interval)
     actor.ConcreteActor.TickActions(actor.entity);
   if("ResolveSprite" in actor.ConcreteActor)
     actor.ConcreteActor.ResolveSpriteIndex();
+
+  if("FrameIndex" in actor.ConcreteActor)
+    actor.FrameIndex = actor.ConcreteActor.FrameIndex;
+
+
 
   EntityTick(actor.entity, interval);
 }

@@ -1,4 +1,4 @@
-function Entity(xInitial, yInitial, gravity, xMoveSpeed, sprites)
+function Entity(xInitial, yInitial, gravity, xMoveSpeed)
 {
   this.xs = [xInitial,xInitial,xInitial];
   this.ys = [yInitial,yInitial,yInitial];
@@ -7,7 +7,6 @@ function Entity(xInitial, yInitial, gravity, xMoveSpeed, sprites)
   this.accruedGravity = 0;
   this.xMoveSpeed = 0;
   this.yMoveSpeed = 0;
-  this.sprites = sprites;
   this.grounded = false;
 }
 

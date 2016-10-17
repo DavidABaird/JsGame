@@ -3,12 +3,22 @@ function Player()
   var WalkSpeed = 6;
   var Gravity = .05;
   var JumpSpeed = 10;
-
   var SlideTicksCount = 0;
+
+  this.Frames = [new FrameData(TEST_SPRITE_A_LEFT,67,107),new FrameData(TEST_SPRITE_A_RIGHT,67,107)];
+  this.FrameIndex = 0;
+
+  var ParentPlayer = this;
+
   this.TickActions = function(entity)
   {
     var velocity = new EntityVelocity(entity.xs,entity.ys,entity.intervals);
     var direction = EntityDirection(velocity.dx);
+
+    if(direction < 0)
+      ParentPlayer.FrameIndex = 0;
+    else if(direction > 0)
+      ParentPlayer.FrameIndex = 1;
 
     if(SlideTicksCount == 0)
     {

@@ -24,23 +24,23 @@ function draw()
     var entity = CurrentActors[actor].entity;
   	context.drawImage(
 
-      CurrentActors[actor].Frames[CurrentActors[actor].frameIndex].sprite,
+      CurrentActors[actor].Frames[CurrentActors[actor].FrameIndex].sprite,
       entity.xs[2],
       entity.ys[2],
-      CurrentActors[actor].Frames[CurrentActors[actor].frameIndex].sprite.width,
-      CurrentActors[actor].Frames[CurrentActors[actor].frameIndex].sprite.height
+      CurrentActors[actor].Frames[CurrentActors[actor].FrameIndex].sprite.width,
+      CurrentActors[actor].Frames[CurrentActors[actor].FrameIndex].sprite.height
     );
 
     if(DEBUG_MODE)
     {
 
       //draw hitbox data
-      for(var point in CurrentActors[actor].Frames[CurrentActors[actor].frameIndex].CollisionBox)
+      for(var point in CurrentActors[actor].Frames[CurrentActors[actor].FrameIndex].CollisionBox)
       {
         context.beginPath();
         context.arc(
-                  CurrentActors[actor].Frames[CurrentActors[actor].frameIndex].CollisionBox[point].x + entity.xs[2],
-                  CurrentActors[actor].Frames[CurrentActors[actor].frameIndex].CollisionBox[point].y + entity.ys[2],
+                  CurrentActors[actor].Frames[CurrentActors[actor].FrameIndex].CollisionBox[point].x + entity.xs[2],
+                  CurrentActors[actor].Frames[CurrentActors[actor].FrameIndex].CollisionBox[point].y + entity.ys[2],
                   2,
                   0,
                   2 * Math.PI,
