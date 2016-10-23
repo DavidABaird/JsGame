@@ -2,7 +2,7 @@ var TickRate = 16;
 
 var CurrentActors = [new Actor(10,10,new Player())];
 var CurrentCollisionMap = GetTestMap();
-var CollisionMapImageData = RenderCollisionMap(CurrentCollisionMap);
+var CollisionMapImageData = BuildCollisionMapImageData(CurrentCollisionMap);
 
 
 
@@ -16,23 +16,14 @@ function draw()
 {
   context = Display.getContext('2d');
   context.clearRect(0,0,CANVAS_WIDTH,CANVAS_HEIGHT);
-  context.putImageData(CollisionMapImageData,400,400);
   for(var actor in CurrentActors)
   {
 
-
     var entity = CurrentActors[actor].entity;
-  	context.drawImage(
-
-      CurrentActors[actor].Frames[CurrentActors[actor].FrameIndex].sprite,
-      entity.xs[2],
-      entity.ys[2],
-      CurrentActors[actor].Frames[CurrentActors[actor].FrameIndex].sprite.width,
-      CurrentActors[actor].Frames[CurrentActors[actor].FrameIndex].sprite.height
-    );
 
     if(DEBUG_MODE)
     {
+      context.putImageData(CollisionMapImageData,0,0);
 
       //draw hitbox data
       for(var point in CurrentActors[actor].Frames[CurrentActors[actor].FrameIndex].CollisionBox)
@@ -51,6 +42,17 @@ function draw()
         context.fill();
       }
     }
+    //END DEBUG
+    //START ACTUAL
+  	context.drawImage(
+
+      CurrentActors[actor].Frames[CurrentActors[actor].FrameIndex].sprite,
+      entity.xs[2],
+      entity.ys[2],
+      CurrentActors[actor].Frames[CurrentActors[actor].FrameIndex].sprite.width,
+      CurrentActors[actor].Frames[CurrentActors[actor].FrameIndex].sprite.height
+    );
+
 
 
   }
@@ -61,7 +63,12 @@ function tick ()
 {
   for(var actor in CurrentActors)
   {
-    ActorTick(CurrentActors[actor], TickRate);
+    ActorTick(CurrentActors[actor],
+      CurrentCollisionMap.GetCollidingPoints(
+        CurrentActors[actor].Frames[CurrentActors[actor].FrameIndex].CollisionBox,
+        CurrentActors[actor].entity.xs[2],
+        CurrentActors[actor].entity.ys[2]),
+      TickRate);
   }
   draw();
 }

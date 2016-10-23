@@ -10,6 +10,17 @@ function Player()
 
   var ParentPlayer = this;
 
+  this.CollisionHandling = function(collisionPoints)
+  {
+
+    if(collisionPoints.length > 0)
+      console.log("Hit something" + collisionPoints.length);
+    else if(collisionPoints.length == 0)
+      console.log("freeeeeee, free fallin!");
+    else
+      console.log("FUUUCK: " + JSON.stringify(collisionPoints));
+  }
+
   this.TickActions = function(entity)
   {
     var velocity = new EntityVelocity(entity.xs,entity.ys,entity.intervals);

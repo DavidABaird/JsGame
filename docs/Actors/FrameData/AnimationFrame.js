@@ -32,7 +32,6 @@ function FrameData(b64Image,width,height)
       }
 
       FrameDataParent.CollisionBox = QuickHull(relativeBodyPoints);
-      console.log(imageData.data);
     };
   image.src = b64Image;
 

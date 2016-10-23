@@ -7,7 +7,6 @@ function PersistantHullData(set,hull)
 
 function QuickHull(points)
 {
-    console.log(points);
     var convexHull = [];
     if (points.length < 3)
         return points;
@@ -73,7 +72,6 @@ function distance(A, B, C)
 
 function hullSet(A, B, set,hull)
 {
-    console.log(JSON.stringify(hull));
     var insertPosition;
 
     for(var i = 0; i < hull.length; i++)
@@ -139,8 +137,6 @@ function hullSet(A, B, set,hull)
             leftSetPB.push(M);
         }
     }
-    console.log(hull);
-    console.log("XXX");
     var tempHullData = hullSet(A, P, leftSetAP, hull);
     hull = tempHullData.hull;
     set = tempHullData.set;

@@ -66,6 +66,8 @@ function MoveEntity(entity, x, y, interval)
   entity.intervals[0] = entity.intervals[1];
   entity.intervals[1] = entity.intervals[2];
   entity.intervals[2] = interval;
+
+  console.log("{" + entity.xs[2] + "," + entity.ys[2] + "}");
 }
 
 function EntityVelocity(xs,ys,intervals)

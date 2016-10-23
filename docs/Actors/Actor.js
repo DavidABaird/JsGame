@@ -27,8 +27,10 @@ function Actor(xInitial, yInitial, concreteActor)
   this.entity = new Entity(xInitial,yInitial,gravity,walkSpeed);
 }
 
-function ActorTick(actor, interval)
+function ActorTick(actor, collisionPoints, interval)
 {
+  if("CollisionHandling" in actor.ConcreteActor)
+    actor.ConcreteActor.CollisionHandling(collisionPoints);
   if("TickActions" in actor.ConcreteActor)
     actor.ConcreteActor.TickActions(actor.entity);
   if("ResolveSprite" in actor.ConcreteActor)
