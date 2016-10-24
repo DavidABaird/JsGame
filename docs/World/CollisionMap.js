@@ -1,8 +1,9 @@
-function CollisionPoint(x,y,collisionType)
+function CollisionPoint(x,y,collisionType, adjustment)
 {
   this.x = x;
   this.y = y;
   this.collisionType = collisionType;
+  this.adjustment = adjustment;
 }
 
 function CollisionMap(xSize,ySize){
@@ -16,22 +17,30 @@ function CollisionMap(xSize,ySize){
     this.Nodes[x] = new Array(ySize);
   }
 
-  this.Nodes.fill(0);
   var ParentThis = this;
-  this.GetCollidingPoints = function(collisionBox,x,y)
+  this.GetCollidingPoints = function(collisionBox, x, y)
   {
     var collisions = [];
     for(var collisionPoint in collisionBox)
     {
-      var thisPointX = collisionBox[collisionPoint].x + x;
-      var thisPointY = collisionBox[collisionPoint].y + y;
-      var collisionNode = ParentThis.Nodes[thisPointX,thisPointY];
-      if(collisionNode != CollisionTypes.air)
+      var thisPointX = Math.floor(collisionBox[collisionPoint].x + x);
+      var thisPointY = Math.floor(collisionBox[collisionPoint].y + y);
+      var collisionNode = ParentThis.Nodes[thisPointX][thisPointY];
+      if(collisionNode == CollisionTypes.floor)
+      {
+        var adjustmentInitial = thisPointY;
+        var adjustmentFinal = thisPointY - 1;
+        while(ParentThis.Nodes[thisPointX][adjustmentFinal] == CollisionTypes.floor)
+        {
+          adjustmentFinal--;
+        }
         collisions.push(
           new CollisionPoint(collisionBox[collisionPoint].x,
           collisionBox[collisionPoint].y,
-          ParentThis.Nodes[thisPointX,thisPointY])
+          ParentThis.Nodes[thisPointX][thisPointY],
+          Math.abs(adjustmentInitial - adjustmentFinal))
         );
+      }
     }
     return collisions;
   }
@@ -41,12 +50,19 @@ function CollisionMap(xSize,ySize){
 function GetTestMap()
 {
   var map = new CollisionMap(CANVAS_WIDTH,CANVAS_HEIGHT);
-  for(var x = 0; x < 200; x++)
+  var slope = 500;
+  for(var x = 0; x < CANVAS_WIDTH; x++)
   {
-    for(var y = 0; y < 200; y++)
+    for(var y = 0; y < CANVAS_HEIGHT; y++)
     {
-      map.Nodes[x,y] = CollisionTypes.floor;
+      if(y > slope)
+        map.Nodes[x][y] = CollisionTypes.floor;
+      else
+        map.Nodes[x][y] = CollisionTypes.air;
     }
+    if(x > 400 && x < 800)
+      if(x % 2)
+        slope-=.3;
   }
 
   return map;
@@ -62,7 +78,7 @@ function BuildCollisionMapImageData(collisionMap)
     for(var x = 0; x < collisionMap.xSize; x++)
     {
       var pos = (y * CollisionMapImageData.width + x) * 4;
-      if(collisionMap.Nodes[x,y] == CollisionTypes.air)
+      if(collisionMap.Nodes[x][y] == CollisionTypes.air)
       {
         CollisionMapImageData.data[pos] = 255;
         imageDataIndex++;
@@ -98,7 +114,7 @@ function LoopTest(map)
   {
     for(var y = 0; y < map.Nodes[x].length; y++)
     {
-      if(map.Nodes[x,y] == CollisionTypes.floor)
+      if(map.Nodes[x][y] == CollisionTypes.floor)
         console.log('X');
       else
         console.log('-')

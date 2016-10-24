@@ -5,24 +5,47 @@ function Player()
   var JumpSpeed = 10;
   var SlideTicksCount = 0;
 
+  this.JumpHeld = 0;
+
   this.Frames = [new FrameData(TEST_SPRITE_A_LEFT,67,107),new FrameData(TEST_SPRITE_A_RIGHT,67,107)];
   this.FrameIndex = 0;
 
   var ParentPlayer = this;
 
-  this.CollisionHandling = function(collisionPoints)
+  this.CollisionHandling = function(entity, collisionPoints, firstPass)
   {
-
-    if(collisionPoints.length > 0)
-      console.log("Hit something" + collisionPoints.length);
-    else if(collisionPoints.length == 0)
-      console.log("freeeeeee, free fallin!");
+    var touchedFloor = false;
+    var maxUpAdjustmentNeeded = 0;
+    for(var point in collisionPoints)
+    {
+      var thisPoint = collisionPoints[point];
+      if(thisPoint.collisionType == CollisionTypes.floor)
+      {
+        touchedFloor = true;
+        if(Math.abs(thisPoint.adjustment/2) > Math.abs(maxUpAdjustmentNeeded))
+          maxUpAdjustmentNeeded = Math.abs(thisPoint.adjustment/2);
+      }
+    }
+    if(touchedFloor && firstPass)
+    {
+      entity.grounded = true;
+      if(entity.yMoveSpeed > 0);
+      {
+        entity.yMoveSpeed = 0;
+      }
+      if(maxUpAdjustmentNeeded >= 2)
+      {
+      entity.ys[2] -= maxUpAdjustmentNeeded;
+      }
+    }
     else
-      console.log("FUUUCK: " + JSON.stringify(collisionPoints));
+      entity.grounded = false;
   }
 
   this.TickActions = function(entity)
   {
+    var ShortHopHold = 5;
+
     var velocity = new EntityVelocity(entity.xs,entity.ys,entity.intervals);
     var direction = EntityDirection(velocity.dx);
 
@@ -49,19 +72,37 @@ function Player()
         entity.xMoveSpeed-=direction * 1;
     }
 
-    if(entity.grounded && KeyboardState._pressed[KeyboardState.UP])
+    if(entity.grounded && KeyboardState._pressed[KeyboardState.UP] && !KeyboardState._pressed[KeyboardState.DOWN])
     {
-      MoveEntity(entity, entity.xs[2],entity.ys[2] - .00001,0);
-      entity.grounded = false;
-      entity.yMoveSpeed = -JumpSpeed;
-      SlideTicksCount = 0;
+      ParentPlayer.JumpHeld++;
+      if(ParentPlayer.JumpHeld == ShortHopHold)
+      {
+        MoveEntity(entity, entity.xs[2],entity.ys[2] - 5,0);
+        entity.grounded = false;
+        entity.yMoveSpeed = -JumpSpeed;
+        SlideTicksCount = 0;
+      }
+    }
+    else if(entity.grounded && !KeyboardState._pressed[KeyboardState.UP])
+    {
+
+      if(ParentPlayer.JumpHeld > 0 && ParentPlayer.JumpHeld < ShortHopHold)
+      {
+
+        MoveEntity(entity, entity.xs[2],entity.ys[2] - 5,0);
+        entity.grounded = false;
+        entity.yMoveSpeed = -JumpSpeed/2;
+        SlideTicksCount = 0;
+      }
+      ParentPlayer.JumpHeld = 0;
     }
 
-    if(!entity.grounded && KeyboardState._pressed[KeyboardState.DOWN])
+    if(!entity.grounded && KeyboardState._pressed[KeyboardState.DOWN] && SlideTicksCount == 0)
     {
       entity.yMoveSpeed = 25;
       entity.xMoveSpeed = direction * 10;
       SlideTicksCount = 25;
     }
+
   }
 }

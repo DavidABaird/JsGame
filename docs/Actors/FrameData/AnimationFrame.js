@@ -1,9 +1,15 @@
 
-function FrameData(b64Image,width,height)
+function FrameData(b64Image,width,height, direction)
 {
   var FrameDataParent = this;
   this.sprite = new Image(width,height);
   this.CollisionBox = [];
+  this.RightMostCollisionPoint = new Point(0,0);
+  this.LeftMostCollisionPoint = new Point(width,0);
+  this.TopMostCollisionPoint = new Point(0,height);
+  this.BottomMostCollisionPoint = new Point(0,0);
+
+
   var image = new Image(width,height);
   image.onload=function()
   {
@@ -32,6 +38,17 @@ function FrameData(b64Image,width,height)
       }
 
       FrameDataParent.CollisionBox = QuickHull(relativeBodyPoints);
+      for(var collisionPoint in FrameDataParent.CollisionBox)
+      {
+        if(FrameDataParent.CollisionBox[collisionPoint].x > FrameDataParent.RightMostCollisionPoint.x)
+          FrameDataParent.RightMostCollisionPoint = FrameDataParent.CollisionBox[collisionPoint];
+        if(FrameDataParent.CollisionBox[collisionPoint].x < FrameDataParent.LeftMostCollisionPoint.x)
+          FrameDataParent.LeftMostCollisionPoint = FrameDataParent.CollisionBox[collisionPoint];
+        if(FrameDataParent.CollisionBox[collisionPoint].y > FrameDataParent.BottomMostCollisionPoint.y)
+          FrameDataParent.BottomMostCollisionPoint = FrameDataParent.CollisionBox[collisionPoint];
+        if(FrameDataParent.CollisionBox[collisionPoint].y < FrameDataParent.TopMostCollisionPoint.y)
+          FrameDataParent.TopMostCollisionPoint = FrameDataParent.CollisionBox[collisionPoint];
+      }
     };
   image.src = b64Image;
 

@@ -32,24 +32,9 @@ function EntityTick(entity, interval)
     entity.yMoveSpeed = TERMINAL_VELOCITY;
   yNext += entity.yMoveSpeed;
 
-  //replace with real collision detection
-  if(yNext >= 500)
-  {
-    entity.grounded = true;
-    yNext = 500;
-  }
+
 
   MoveEntity(entity,xNext,yNext,interval);
-
-}
-
-function HasLanded(collisionMap, entity, animationFrameData)
-{
-
-}
-
-function HasBumped(collisionMap, entity, animationFrameData)
-{
 
 }
 
@@ -67,7 +52,7 @@ function MoveEntity(entity, x, y, interval)
   entity.intervals[1] = entity.intervals[2];
   entity.intervals[2] = interval;
 
-  console.log("{" + entity.xs[2] + "," + entity.ys[2] + "}");
+  //console.log("{" + entity.xs[2] + "," + entity.ys[2] + "}");
 }
 
 function EntityVelocity(xs,ys,intervals)
