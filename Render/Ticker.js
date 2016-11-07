@@ -1,5 +1,5 @@
 var TickRate = 16;
-var CurrentActors = [new Actor(10,10,new Player())];
+var CurrentActors = [new Actor(199,10,new Player())];
 var CurrentCollisionMap = GetTestMap();
 var CollisionMapImageData = BuildCollisionMapImageData(CurrentCollisionMap);
 

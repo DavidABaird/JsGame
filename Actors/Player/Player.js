@@ -15,17 +15,34 @@ function Player()
   this.CollisionHandling = function(entity, collisionPoints, firstPass)
   {
     var touchedFloor = false;
+    var touchedWall = false;
     var maxUpAdjustmentNeeded = 0;
+    var maxSideAdjustmentNeeded = 0;
     for(var point in collisionPoints)
     {
       var thisPoint = collisionPoints[point];
       if(thisPoint.collisionType == CollisionTypes.floor)
       {
         touchedFloor = true;
-        if(Math.abs(thisPoint.adjustment/2) > Math.abs(maxUpAdjustmentNeeded))
-          maxUpAdjustmentNeeded = Math.abs(thisPoint.adjustment/2);
+        if(Math.abs(thisPoint.upAdjustment/2) > Math.abs(maxUpAdjustmentNeeded))
+          maxUpAdjustmentNeeded = Math.abs(thisPoint.upAdjustment/2);
+      }
+      else if(thisPoint.collisionType == CollisionTypes.wall)
+      {
+        touchedWall = true;
+        if(Math.abs(thisPoint.sideAdjustment/2) > Math.abs(maxSideAdjustmentNeeded))
+          maxSideAdjustmentNeeded = thisPoint.sideAdjustment/2;
       }
     }
+
+    if(touchedWall && firstPass)
+    {
+      entity.xMoveSpeed = 0;
+      entity.xs[2] += maxSideAdjustmentNeeded;
+      entity.xs[1] = entity.xs[2];
+      entity.xs[0] = entity.xs[2];
+    }
+
     if(touchedFloor && firstPass)
     {
       entity.grounded = true;
@@ -35,11 +52,14 @@ function Player()
       }
       if(maxUpAdjustmentNeeded >= 2)
       {
-      entity.ys[2] -= maxUpAdjustmentNeeded;
+        entity.ys[2] -= maxUpAdjustmentNeeded;
       }
     }
     else
       entity.grounded = false;
+
+
+
   }
 
   this.TickActions = function(entity)

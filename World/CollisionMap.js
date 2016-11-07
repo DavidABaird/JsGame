@@ -1,9 +1,18 @@
-function CollisionPoint(x,y,collisionType, adjustment)
+CollisionTypes = {
+
+	air: 0,
+	floor: 1,
+	wall: 2
+
+};
+
+function CollisionPoint(x,y,collisionType, upAdjustment, sideAdjustment)
 {
   this.x = x;
   this.y = y;
   this.collisionType = collisionType;
-  this.adjustment = adjustment;
+  this.upAdjustment = upAdjustment;
+  this.sideAdjustment = sideAdjustment;
 }
 
 function CollisionMap(xSize,ySize){
@@ -26,19 +35,39 @@ function CollisionMap(xSize,ySize){
       var thisPointX = Math.floor(collisionBox[collisionPoint].x + x);
       var thisPointY = Math.floor(collisionBox[collisionPoint].y + y);
       var collisionNode = ParentThis.Nodes[thisPointX][thisPointY];
-      if(collisionNode == CollisionTypes.floor)
+      if(collisionNode != CollisionTypes.air)
       {
-        var adjustmentInitial = thisPointY;
-        var adjustmentFinal = thisPointY - 1;
-        while(ParentThis.Nodes[thisPointX][adjustmentFinal] == CollisionTypes.floor)
+        var upAdjustmentInitial = thisPointY;
+        var upAdjustmentFinal = thisPointY;
+        while(upAdjustmentFinal > 0 && upAdjustmentFinal < CANVAS_HEIGHT && ParentThis.Nodes[thisPointX][upAdjustmentFinal] == CollisionTypes.floor)
         {
-          adjustmentFinal--;
+          upAdjustmentFinal--;
         }
+        var sideAdjustmentInitial = thisPointX;
+        var sideAdjustmentFinal = thisPointX;
+        var wallWidthLimiter = 0;
+        while(sideAdjustmentFinal > 0 && sideAdjustmentFinal < CANVAS_WIDTH && wallWidthLimiter < 30 && ParentThis.Nodes[sideAdjustmentFinal][thisPointY] == CollisionTypes.wall)
+        {
+          sideAdjustmentFinal--;
+          wallWidthLimiter++;
+        }
+        if(wallWidthLimiter == 30)
+        {
+          wallWidthLimiter = 0;
+          sideAdjustmentFinal = thisPointX;
+          while(sideAdjustmentFinal > 0 && sideAdjustmentFinal < CANVAS_WIDTH && wallWidthLimiter < 30 && ParentThis.Nodes[sideAdjustmentFinal][thisPointY] == CollisionTypes.wall)
+          {
+            sideAdjustmentFinal++;
+            wallWidthLimiter++;
+          }
+        }
+        console.log((sideAdjustmentInitial - sideAdjustmentFinal));
         collisions.push(
           new CollisionPoint(collisionBox[collisionPoint].x,
           collisionBox[collisionPoint].y,
           ParentThis.Nodes[thisPointX][thisPointY],
-          Math.abs(adjustmentInitial - adjustmentFinal))
+          Math.abs(upAdjustmentInitial - upAdjustmentFinal),
+          -(sideAdjustmentInitial - sideAdjustmentFinal))
         );
       }
     }
@@ -63,6 +92,14 @@ function GetTestMap()
     if(x > 400 && x < 800)
       if(x % 2)
         slope-=.3;
+  }
+  for(var x = 0; x < CANVAS_WIDTH; x++)
+  {
+    for(var y = 0; y < CANVAS_HEIGHT; y++)
+    {
+      if(x < 100 && y < 500 || x > 900 && y < slope)
+        map.Nodes[x][y] = CollisionTypes.wall;
+    }
   }
 
   return map;
@@ -89,11 +126,22 @@ function BuildCollisionMapImageData(collisionMap)
         CollisionMapImageData.data[pos + 3] = 0;
         imageDataIndex++;
       }
-      else
+      else if(collisionMap.Nodes[x][y] == CollisionTypes.floor)
       {
         CollisionMapImageData.data[pos] = 0;
         imageDataIndex++;
         CollisionMapImageData.data[pos + 1] = 255;
+        imageDataIndex++;
+        CollisionMapImageData.data[pos + 2] = 0;
+        imageDataIndex++;
+        CollisionMapImageData.data[pos + 3] = 255;
+        imageDataIndex++;
+      }
+      else if(collisionMap.Nodes[x][y] == CollisionTypes.wall)
+      {
+        CollisionMapImageData.data[pos] = 255;
+        imageDataIndex++;
+        CollisionMapImageData.data[pos + 1] = 0;
         imageDataIndex++;
         CollisionMapImageData.data[pos + 2] = 0;
         imageDataIndex++;

@@ -30,8 +30,9 @@ function Actor(xInitial, yInitial, concreteActor)
 function ActorTick(actor, collisionPoints, interval)
 {
 
-    if("CollisionHandling" in actor.ConcreteActor)
-      actor.ConcreteActor.CollisionHandling(actor.entity, collisionPoints, true);
+  if("CollisionHandling" in actor.ConcreteActor)
+    actor.ConcreteActor.CollisionHandling(actor.entity, collisionPoints, true);
+
   if("TickActions" in actor.ConcreteActor)
     actor.ConcreteActor.TickActions(actor.entity);
 
@@ -46,8 +47,8 @@ function ActorTick(actor, collisionPoints, interval)
 
   EntityTick(actor.entity, interval, false);
 
+  if("CollisionHandling" in actor.ConcreteActor)
+    actor.ConcreteActor.CollisionHandling(actor.entity, collisionPoints, false);
 
 
-
-  console.log(actor.entity.yMoveSpeed);
 }
